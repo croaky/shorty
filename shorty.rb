@@ -1,48 +1,46 @@
-# This came out of a Boston.rb hackfest
-# I'm moving it to github
-# I think someone challenged someone else
-# to create a URL-shortening app
-# in the fewest lines of Ruby possible
-
 require 'rubygems'
-require 'shorturl'
-require 'camping'
+require 'sinatra'
+require 'database'
 
-Camping.goes :Short
+get '/' do
+  <<-HTML
+    <title>Shorty</title>
+    <form action="/shorten" method="post">
+      <input type="text" name="url" />
+      <input type="submit" value="shorten" />
+    </form>
+  HTML
+end
 
-module Short::Models
-  class Url < Base
-    before_save :shorten_url
+post '/shorten' do
+  reject_blank params[:url]
+  shorten      params[:url]
+  id = id_for  params[:url]
+  "<a href='/#{id}'>http://capeco.de/#{id}</a>"
+end
 
-    def shorten_url
-      self.short_path = ShortURL.shorten self.long_path
-    end
+get '/:id' do |id|
+  if url = url_for(id)
+    redirect(url)
+  else
+    "Not Found"
   end
 end
 
-module Short::Controllers
-  class Show < R '/(\d+)'
-    def get(short_path)
-      @url = URL.find_by_short_path
-      redirect @url.long_path
-    end
+helpers do
+  def reject_blank(url)
+    redirect('/') unless url.size > 0
   end
-  
-  class Create < R '/create'
-    def get
-      render :create
-    end
-    def post
-      # consume form
-    end
-  end
-end
 
-module Short::Views
-  def create
-    form :action => handler, :method => 'post' do
-      input :name => 'long_path', :id => 'long_path'
-      input :type => 'submit', :value => 'Shorten'
-    end
+  def shorten(url)
+    database[:urls].insert(:url => url) unless Url.find(:url => url)
+  end
+
+  def id_for(url)
+    database["select id from urls where url = ?", url].to_s(36)
+  end
+
+  def url_for(id)
+    database["select url from urls where id = ?", id.to_i(36)]
   end
 end
