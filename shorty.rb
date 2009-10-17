@@ -41,7 +41,7 @@ helpers do
   end
 
   def shorten(url)
-    DB['urls'].insert('url' => url, 'slug' => DB['urls'].count.to_s(36))
+    DB['urls'].insert('url' => url, 'slug' => 'test')#DB['urls'].count.to_s(36))
   end
 
   def slug_for(url)
