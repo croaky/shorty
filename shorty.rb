@@ -9,6 +9,10 @@ if ENV['DATABASE_USER'] && ENV['DATABASE_PASSWORD']
   auth = DB.authenticate(ENV['DATABASE_USER'], ENV['DATABASE_PASSWORD'])
 end
 
+configure :production do
+  enable :raise_errors
+end
+
 get '/' do
   <<-HTML
     <title>URL shortener</title>
