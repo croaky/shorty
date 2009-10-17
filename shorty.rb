@@ -45,8 +45,7 @@ helpers do
   end
 
   def shorten(url)
-    puts DB.authenticate(ENV['DATABASE_USER'], ENV['DATABASE_PASSWORD'])
-    DB['urls'].insert('url' => url, 'slug' => 'test')#DB['urls'].count.to_s(36))
+    DB['urls'].insert('url' => url, 'slug' => DB['urls'].count.to_s(36))
   end
 
   def slug_for(url)
