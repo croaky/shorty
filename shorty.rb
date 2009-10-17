@@ -7,7 +7,6 @@ include Mongo
 DB = Connection.new(ENV['DATABASE_URL'] || 'localhost').db('shorty')
 if ENV['DATABASE_USER'] && ENV['DATABASE_PASSWORD']
   auth = DB.authenticate(ENV['DATABASE_USER'], ENV['DATABASE_PASSWORD'])
-  puts auth.inspect
 end
 
 get '/' do
@@ -42,6 +41,7 @@ helpers do
   end
 
   def shorten(url)
+    puts DB.authenticate(ENV['DATABASE_USER'], ENV['DATABASE_PASSWORD'])
     DB['urls'].insert('url' => url, 'slug' => 'test')#DB['urls'].count.to_s(36))
   end
 
