@@ -6,7 +6,8 @@ include Mongo
 
 DB = Connection.new(ENV['DATABASE_URL'] || 'localhost').db('shorty')
 if ENV['DATABASE_USER'] && ENV['DATABASE_PASSWORD']
-  DB.authenticate(ENV['DATABASE_USER'], ENV['DATABASE_PASSWORD'])
+  auth = DB.authenticate(ENV['DATABASE_USER'], ENV['DATABASE_PASSWORD'])
+  puts auth.inspect
 end
 
 get '/' do

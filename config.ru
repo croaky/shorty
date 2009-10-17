@@ -1,3 +1,3 @@
 require 'shorty'
 
-run Sinatra.application
+run Sinatra::Application
