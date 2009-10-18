@@ -1,3 +1,5 @@
+require File.join(File.dirname(__FILE__, 'test_helper'))
+
 Feature 'Shorten URL' do
   Given 'I am on the homepage' do
     get '/'
