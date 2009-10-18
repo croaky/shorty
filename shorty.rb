@@ -28,7 +28,8 @@ post '/shorten' do
   reject_blank    params[:url]
   shorten         params[:url]
   slug = slug_for params[:url]
-  "<a href='/#{slug}'>http://#{Sinatra::Application.host}/#{slug}</a>"
+  host = Sinatra::Application.host
+  "<a href='/#{slug}' id='short'>http://#{host}/#{slug}</a>"
 end
 
 get '/:slug' do |slug|
