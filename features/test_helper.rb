@@ -46,3 +46,9 @@ def feature_class(name)
   Object.const_set(class_name, feature)
 end
 
+# research
+#
+# http://www.sinatrarb.com/testing.html
+# http://gist.github.com/188594
+# http://github.com/jferris/fontane/blob/master/features/support/env.rb
+
