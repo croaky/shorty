@@ -2,7 +2,6 @@ require File.join(File.dirname(__FILE__), '..', 'shorty')
 require 'webrat'
 
 Spec::Runner.configure do |config|
-  config.include(Webrat::Session)
   config.include(Webrat::Matchers, :type => [:integration])
 end
 

@@ -13,8 +13,29 @@ Hosting
 
 I recommend using [Heroku](http://heroku.com) for the app and [MongoHQ](http://mongohq.com) for storage.
 
-Tests
------
+Features
+--------
 
-The app is tested in an acceptance style. It uses Rack::Test (which is built on top of Test::Unit), Webrat, and a custom Cucumber-ish DSL, using methods instead of pattern matching programming.
+    Feature 'Shorten URL' do
+      Given 'I am on the homepage' do
+        visit '/'
+      end
+
+      When 'I submit http://dancroak.com' do
+        fill_in      'url', :with => 'http://dancroak.com'
+        click_button 'shorten'
+      end
+
+      Then 'I should see a short link' do
+        response.should have_selector('a#short')
+      end
+
+      When 'I follow the short link' do
+        click_link 'short'
+      end
+
+      Then 'I should be on http://dancroak.com' do
+        current_url.should_be 'http://dancroak.com'
+      end
+    end
 
