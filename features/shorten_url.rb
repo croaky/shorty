@@ -1,8 +1,8 @@
-require File.join(File.dirname(__FILE__), 'test_helper')
+require File.join(File.dirname(__FILE__), 'spec_helper')
 
 Feature 'Shorten URL' do
   Given 'I am on the homepage' do
-    get '/'
+    visit '/'
   end
 
   When 'I submit http://dancroak.com' do
@@ -11,7 +11,7 @@ Feature 'Shorten URL' do
   end
 
   Then 'I should see a short link' do
-    assert_have_selector 'a#short'
+    response.should have_selector('a#short')
   end
 
   When 'I follow the short link' do
@@ -19,6 +19,6 @@ Feature 'Shorten URL' do
   end
 
   Then 'I should be on http://dancroak.com' do
-    assert_equal 'http://dancroak.com', current_url
+    current_url.should_be 'http://dancroak.com'
   end
 end

@@ -25,20 +25,19 @@ class Test::Unit::TestCase
     %w(When Then Add).each { |name| alias_method name, :Given }
 
     def should(name, &block)
-      test_name = "test_#{name.gsub(/\s+/,'_')}".to_sym
+      test_name = "test_#{name.gsub(/\W+/, ' ').strip.gsub(/\s+/,'_')}".to_sym
       define_method(test_name, &block)
     end
   end
 end
 
 def Feature(name, &block)
-  camelized = name.gsub(/(?:^|_)(.)/) { $1.upcase }.gsub(' ', '')
+  camelized = name.gsub(/\W+/, ' ').strip.gsub(/(^| )(\w)/) { $2.upcase }
   feature = Class.new(Test::Unit::TestCase)
   feature.name = name
   feature.statements = []
   Object.const_set(camelized, feature).class_eval(&block)
 end
-
 
 # research
 #
