@@ -1,47 +1,80 @@
-require File.join(File.dirname(__FILE__), '..', 'shorty')
-require 'test/unit'
-require 'rack/test'
-require 'webrat'
-
-Webrat.configure do |config|
-  config.mode = :sinatra
-end
-
-set :environment, :test
-
-class Test::Unit::TestCase
-  include Rack::Test::Methods
-
-  def app
-    Sinatra::Application
-  end
-
-  class << self
-    attr_accessor :name, :statements
-
-    def Given(name, &block)
-      @statements << [name, block]
-    end
-    %w(When Then Add).each { |name| alias_method name, :Given }
-
-    def should(name, &block)
-      test_name = "test_#{name.gsub(/\W+/, ' ').strip.gsub(/\s+/,'_')}".to_sym
-      define_method(test_name, &block)
-    end
-  end
-end
-
-def Feature(name, &block)
-  camelized = name.gsub(/\W+/, ' ').strip.gsub(/(^| )(\w)/) { $2.upcase }
-  feature = Class.new(Test::Unit::TestCase)
-  feature.name = name
-  feature.statements = []
-  Object.const_set(camelized, feature).class_eval(&block)
-end
-
 # research
 #
 # http://www.sinatrarb.com/testing.html
 # http://gist.github.com/188594
 # http://github.com/jferris/fontane/blob/master/features/support/env.rb
+
+require File.join(File.dirname(__FILE__), '..', 'shorty')
+require 'test/unit'
+require 'rubygems'
+require "rack/test"
+require 'webrat'
+
+Webrat.configure do |config|
+  config.mode = :rack
+end
+
+class Test::Unit::TestCase
+  include Rack::Test::Methods
+  include Webrat::Methods
+  include Webrat::Matchers
+  include Webrat::HaveTagMatcher
+
+  def build_rack_mock_session
+    Rack::MockSession.new(app, "www.example.com")
+  end
+
+  def app
+    Rack::Builder.new {
+      use Rack::Lint
+      run RackApp.new
+    }
+  end
+end
+
+Statement = Struct.new(:type, :name, :block)
+
+def Given(name, &block)
+  @statements << Statement.new("Given", name, block)
+end
+
+def When(name, &block)
+  @statements << Statement.new("When", name, block)
+end
+
+def Then(name, &block)
+  @statements << Statement.new("Then", name, block)
+end
+
+def And(name, &block)
+  @statements << Statement.new("And", name, block)
+end
+
+def Feature(name, &block)
+  @statements = []
+  block.call
+  puts @statements.inspect
+  eval(
+    "class #{class_name(name)} < Test::Unit::TestCase
+       def #{concatenated_test_name(@statements)}
+         #{@statements.each { |statement| statement.block.call }}
+       end
+     end"
+  )
+end
+
+def class_name(name)
+  name.gsub(' ', '_').gsub(/(?:^|_)(.)/) { $1.upcase }
+end
+
+def test_name(name)
+  "test_#{name.gsub(/\s+/,'_')}".to_sym
+end
+
+def concatenated_test_name(statements)
+  test_name(
+    statements.collect { |statement| "#{statement.type} #{statement.name}" }.
+               join(' ')
+  )
+end
 
