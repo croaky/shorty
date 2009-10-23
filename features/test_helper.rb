@@ -1,9 +1,3 @@
-# research
-#
-# http://www.sinatrarb.com/testing.html
-# http://gist.github.com/188594
-# http://github.com/jferris/fontane/blob/master/features/support/env.rb
-
 require File.join(File.dirname(__FILE__), '..', 'shorty')
 require 'test/unit'
 require 'rubygems'
@@ -35,32 +29,32 @@ end
 Statement = Struct.new(:type, :name, :block)
 
 def Given(name, &block)
-  @statements << Statement.new("Given", name, block)
+  Statement.new("Given", name, block)
 end
 
 def When(name, &block)
-  @statements << Statement.new("When", name, block)
+  Statement.new("When", name, block)
 end
 
 def Then(name, &block)
-  @statements << Statement.new("Then", name, block)
+  Statement.new("Then", name, block)
 end
 
 def And(name, &block)
-  @statements << Statement.new("And", name, block)
+  Statement.new("And", name, block)
 end
 
 def Feature(name, &block)
-  @statements = []
   block.call
-  puts @statements.inspect
+  statements = []
+  ObjectSpace.each_object(Statement) { |statement| statements << statement }
+  statements.reverse!
   eval(
     "class #{class_name(name)} < Test::Unit::TestCase
-       def #{concatenated_test_name(@statements)}
-         #{@statements.each { |statement| statement.block.call }}
+       def default_test
+         instance_eval(#{ statements.each { |s| s.block.call } })
        end
-     end"
-  )
+     end")
 end
 
 def class_name(name)
@@ -68,13 +62,10 @@ def class_name(name)
 end
 
 def test_name(name)
-  "test_#{name.gsub(/\s+/,'_')}".to_sym
+  "test_#{name.gsub(/\W+/,'_')}".to_sym
 end
 
 def concatenated_test_name(statements)
-  test_name(
-    statements.collect { |statement| "#{statement.type} #{statement.name}" }.
-               join(' ')
-  )
+  test_name(statements.collect { |s| "#{s.type} #{s.name}" }.join(' '))
 end
 

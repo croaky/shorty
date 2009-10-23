@@ -19,6 +19,7 @@ Feature 'Shorten URL' do
   end
 
   Then 'I should be on http://dancroak.com' do
-    current_url.should_be 'http://dancroak.com'
+    puts "HAAALLLO"
+    current_url.should_be 'http://dancroak.org'
   end
 end
