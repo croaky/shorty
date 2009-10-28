@@ -8,51 +8,30 @@ Webrat.configure do |config|
   config.mode = :rack
 end
 
-class Test::Unit::TestCase
-  include Rack::Test::Methods
-  include Webrat::Methods
-  include Webrat::Matchers
-  include Webrat::HaveTagMatcher
+include Rack::Test::Methods
+include Webrat::Methods
+include Webrat::Matchers
+include Webrat::HaveTagMatcher
 
-  def build_rack_mock_session
-    Rack::MockSession.new(app, "www.example.com")
-  end
-
-  def app
-    Rack::Builder.new {
-      use Rack::Lint
-      run RackApp.new
-    }
-  end
+def app
+  Rack::Builder.new { use Rack::Lint; run Sinatra::Application }
 end
 
 Statement = Struct.new(:type, :name, :block)
 
-def Given(name, &block)
-  Statement.new("Given", name, block)
-end
-
-def When(name, &block)
-  Statement.new("When", name, block)
-end
-
-def Then(name, &block)
-  Statement.new("Then", name, block)
-end
-
-def And(name, &block)
-  Statement.new("And", name, block)
-end
+def Given(name, &block); Statement.new("Given", name, block); end
+def When(name, &block);  Statement.new("When",  name, block); end
+def Then(name, &block);  Statement.new("Then",  name, block); end
+def And(name, &block);   Statement.new("And",   name, block); end
 
 def Feature(name, &block)
   block.call
-  statements = []
-  ObjectSpace.each_object(Statement) { |statement| statements << statement }
-  statements.reverse!
   eval(
     "class #{class_name(name)} < Test::Unit::TestCase
        def default_test
-         instance_eval(#{ statements.each { |s| s.block.call } })
+        statements = []
+        ObjectSpace.each_object(Statement) { |s| statements << s }
+        statements.reverse.each { |s| s.block.call }
        end
      end")
 end
