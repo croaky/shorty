@@ -14,7 +14,7 @@ include Webrat::Matchers
 include Webrat::HaveTagMatcher
 
 def app
-  Rack::Builder.new { use Rack::Lint; run Sinatra::Application }
+  Sinatra::Application
 end
 
 Statement = Struct.new(:type, :name, :block)
@@ -29,9 +29,9 @@ def Feature(name, &block)
   eval(
     "class #{class_name(name)} < Test::Unit::TestCase
        def default_test
-        statements = []
-        ObjectSpace.each_object(Statement) { |s| statements << s }
-        statements.reverse.each { |s| s.block.call }
+         statements = []
+         ObjectSpace.each_object(Statement) { |s| statements << s }
+         statements.reverse.each { |s| s.block.call }
        end
      end")
 end

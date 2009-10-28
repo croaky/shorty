@@ -11,7 +11,7 @@ Feature 'Shorten URL' do
   end
 
   Then 'I should see a short link' do
-    response.should have_selector('a#short')
+    assert_have_selector 'a#short'
   end
 
   When 'I follow the short link' do
@@ -19,7 +19,6 @@ Feature 'Shorten URL' do
   end
 
   Then 'I should be on http://dancroak.com' do
-    puts "HAAALLLO"
-    current_url.should_be 'http://dancroak.org'
+    assert_equal 'http://dancroak.org', current_url
   end
 end
