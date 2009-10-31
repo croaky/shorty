@@ -29,7 +29,7 @@ post '/shorten' do
   shorten         params[:url]
   slug = slug_for params[:url]
   host = Sinatra::Application.host
-  "<a href='/#{slug}' id='short'>http://#{host}/#{slug}</a>"
+  "<a href='/#{slug}' id='short'>http://shorty-app.heroku.com/#{slug}</a>"
 end
 
 get '/:slug' do |slug|

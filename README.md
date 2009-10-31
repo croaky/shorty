@@ -27,7 +27,7 @@ Features
       end
 
       Then 'I should see a short link' do
-        response.should have_selector('a#short')
+        assert_have_selector 'a#short'
       end
 
       When 'I follow the short link' do
@@ -35,7 +35,7 @@ Features
       end
 
       Then 'I should be on http://dancroak.com' do
-        current_url.should_be 'http://dancroak.com'
+        assert_equal 'http://dancroak.org', current_url
       end
     end
 
