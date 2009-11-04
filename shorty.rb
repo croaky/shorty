@@ -4,7 +4,8 @@ require 'mongo'
 
 include Mongo
 
-DB = Connection.new(ENV['DATABASE_URL'] || 'localhost').db('shorty')
+ConnectFour = Connection.new(ENV['DATABASE_URL'] || 'localhost')
+DB = ConnectFour.db('shorty')
 if ENV['DATABASE_USER'] && ENV['DATABASE_PASSWORD']
   auth = DB.authenticate(ENV['DATABASE_USER'], ENV['DATABASE_PASSWORD'])
 end
@@ -46,7 +47,9 @@ helpers do
   end
 
   def shorten(url)
-    DB['urls'].insert('url' => url, 'slug' => DB['urls'].count.to_s(36))
+    if DB['urls'].find('url' => url).count == 0
+      DB['urls'].insert('url' => url, 'slug' => DB['urls'].count.to_s(36))
+    end
   end
 
   def slug_for(url)

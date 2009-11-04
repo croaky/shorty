@@ -47,4 +47,3 @@ end
 def class_name(name)
   name.gsub(' ', '_').gsub(/(?:^|_)(.)/) { $1.upcase }
 end
-

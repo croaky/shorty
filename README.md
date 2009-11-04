@@ -13,8 +13,8 @@ Hosting
 
 I recommend using [Heroku](http://heroku.com) for the app and [MongoHQ](http://mongohq.com) for storage.
 
-Features
---------
+Feature
+-------
 
     Feature 'Shorten URL' do
       Given 'I am on the homepage' do
@@ -35,7 +35,7 @@ Features
       end
 
       Then 'I should be on http://dancroak.com' do
-        assert_equal 'http://dancroak.org', current_url
+        assert_equal 'http://dancroak.com', current_url
       end
     end
 
