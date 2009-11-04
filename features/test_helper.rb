@@ -8,7 +8,7 @@ Webrat.configure { |config| config.mode = :rack }
 
 class Statement < Struct.new(:type, :name, :block); end
 
-module Teleplay
+module CrazyHustlinRastaFrog
   def self.included(model)
     model.extend(ClassMethods)
 
@@ -28,7 +28,7 @@ module Teleplay
   def app; Sinatra::Application; end
 end
 
-class Test::Unit::TestCase; include Teleplay; end
+class Test::Unit::TestCase; include CrazyHustlinRastaFrog; end
 
 def Feature(name, &block)
   test_class = Module.const_set class_name(name), Class.new(Test::Unit::TestCase)
