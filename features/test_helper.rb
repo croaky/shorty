@@ -4,9 +4,7 @@ require 'rubygems'
 require "rack/test"
 require 'webrat'
 
-Webrat.configure do |config|
-  config.mode = :rack
-end
+Webrat.configure { |config| config.mode = :rack }
 
 class Statement < Struct.new(:type, :name, :block); end
 
@@ -27,17 +25,13 @@ module Teleplay
     def And(name, &block);   Statement.new("And",   name, block); end
   end
 
-  def app
-    Sinatra::Application
-  end
+  def app; Sinatra::Application; end
 end
 
-class Test::Unit::TestCase
-  include Teleplay
-end
+class Test::Unit::TestCase; include Teleplay; end
 
 def Feature(name, &block)
-  test_class = Module.const_set(class_name(name), Class.new(Test::Unit::TestCase))
+  test_class = Module.const_set class_name(name), Class.new(Test::Unit::TestCase)
 
   test_class.class_eval do
     def default_test
@@ -52,13 +46,5 @@ end
 
 def class_name(name)
   name.gsub(' ', '_').gsub(/(?:^|_)(.)/) { $1.upcase }
-end
-
-def test_name(name)
-  "test_#{name.gsub(/\W+/,'_')}".to_sym
-end
-
-def concatenated_test_name(statements)
-  test_name(statements.collect { |s| "#{s.type} #{s.name}" }.join(' '))
 end
 
