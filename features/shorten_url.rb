@@ -19,6 +19,6 @@ Feature 'Shorten URL' do
   end
 
   Then 'I should be on http://dancroak.com' do
-    assert_equal 'http://dancroak.org', current_url
+    assert_equal 'http://dancroak.com', current_url
   end
 end

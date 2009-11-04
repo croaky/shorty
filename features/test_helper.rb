@@ -37,7 +37,7 @@ def Feature(name, &block)
     def default_test
       statements = []
       ObjectSpace.each_object(Statement) { |s| statements << s }
-      statements.reverse.each { |s| s.block.call }
+      statements.reverse.each { |s| instance_eval(&s.block) }
     end
   end
 
