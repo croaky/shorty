@@ -1,8 +1,9 @@
 require File.join(File.dirname(__FILE__), '..', 'shorty')
 require 'test/unit'
 require 'rubygems'
-require "rack/test"
+require 'rack/test'
 require 'webrat'
+require 'x'
 
 Webrat.configure { |config| config.mode = :rack }
 
@@ -31,7 +32,7 @@ end
 class Test::Unit::TestCase; include CrazyHustlinRastaFrog; end
 
 def Feature(name, &block)
-  test_class = Module.const_set class_name(name), Class.new(Test::Unit::TestCase)
+  test_class = Module.const_set name.camel_case, Class.new(Test::Unit::TestCase)
 
   test_class.class_eval do
     def default_test
@@ -42,8 +43,4 @@ def Feature(name, &block)
   end
 
   test_class.class_eval(&block)
-end
-
-def class_name(name)
-  name.gsub(' ', '_').gsub(/(?:^|_)(.)/) { $1.upcase }
 end
