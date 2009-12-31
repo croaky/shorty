@@ -1,18 +1,3 @@
-require 'rubygems'
-require 'sinatra'
-require 'mongo'
-
-include Mongo
-
-DB = Connection.new(ENV['DATABASE_URL'] || 'localhost').db('shorty')
-if ENV['DATABASE_USER'] && ENV['DATABASE_PASSWORD']
-  auth = DB.authenticate(ENV['DATABASE_USER'], ENV['DATABASE_PASSWORD'])
-end
-
-configure :production do
-  enable :raise_errors
-end
-
 get '/' do
   <<-HTML
     <title>URL shortener</title>
@@ -20,7 +5,6 @@ get '/' do
       <input type="text" name="url" />
       <input type="submit" value="shorten" />
     </form>
-    <p>Written in Sinatra and MongoDB.</p>
   HTML
 end
 

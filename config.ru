@@ -1,6 +1,3 @@
-require 'shorty'
-require 'rack_hoptoad'
-
-use Rack::HoptoadNotifier, ENV['HOPTOAD'] || "1234"
-
+require 'groove'
+require 'app'
 run Sinatra::Application
