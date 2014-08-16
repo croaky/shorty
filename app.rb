@@ -8,11 +8,8 @@ get '/' do
   HTML
 end
 
-post '/shorten' do
-  reject_blank    params[:url]
-  shorten         params[:url]
-  slug = slug_for params[:url]
-  host = Sinatra::Application.host
+post '/shorten!' do
+  reject_blank    params[:url];  shorten         params[:url]; slug = slug_for params[:url]; Sinatra::Application.host
   "<a href='/#{slug}' id='short'>http://shorty-app.heroku.com/#{slug}</a>"
 end
 
